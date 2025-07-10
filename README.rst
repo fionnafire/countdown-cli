@@ -32,6 +32,8 @@ countdown-cli
    :target: https://github.com/psf/black
    :alt: Black
 
+**This is a fork of the original** `treyhunner/countdown-cli`_ **with additional features.**
+
 This project is based on a `Python Morsels`_ exercise for a command-line countdown timer.
 If you're working on that exercise right now, please **don't look at the source code** for this. 😉
 
@@ -52,6 +54,7 @@ Features
 
 * Full-screen countdown timer, centered in the terminal window
 * Command-line interface for Linux/Mac/Windows
+* **Red end screen display when countdown reaches zero** (NEW in this fork)
 
 |32:53|
 
@@ -64,6 +67,12 @@ Features
 .. |14:57| image:: https://raw.githubusercontent.com/treyhunner/countdown-cli/main/images/1457.png
    :width: 500
    :alt: 14:57 shown in large letters in center of terminal window (light background with darker text)
+
+
+What's New in This Fork
+-----------------------
+
+**Red End Screen**: When the countdown reaches zero, the timer now displays a prominent red "END" message on the screen, making it impossible to miss when time is up. This visual enhancement provides a clear, attention-grabbing indication that the countdown has finished.
 
 
 Requirements
@@ -108,13 +117,17 @@ Credits
 
 This project was generated from `@cjolowicz`_'s `Hypermodern Python Cookiecutter`_ template.
 
+This fork includes enhancements by `@fionnafire`_ including the red end screen feature.
+
 .. _Python Morsels: https://www.pythonmorsels.com
+.. _treyhunner/countdown-cli: https://github.com/treyhunner/countdown-cli
 .. _@cjolowicz: https://github.com/cjolowicz
+.. _@fionnafire: https://github.com/fionnafire
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _MIT license: https://opensource.org/licenses/MIT
 .. _PyPI: https://pypi.org/project/countdown-cli/
 .. _Hypermodern Python Cookiecutter: https://github.com/cjolowicz/cookiecutter-hypermodern-python
-.. _file an issue: https://github.com/treyhunner/countdown-cli/issues
+.. _file an issue: https://github.com/fionnafire/countdown-cli/issues
 .. _pip: https://pip.pypa.io/
 .. github-only
 .. _Contributor Guide: CONTRIBUTING.rst
