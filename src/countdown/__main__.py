@@ -12,6 +12,8 @@ ENABLE_ALT_BUFFER = "\033[?1049h"
 DISABLE_ALT_BUFFER = "\033[?1049l"
 HIDE_CURSOR = "\033[?25l"
 SHOW_CURSOR = "\033[?25h"
+RED_BACKGROUND = "\033[41m"
+RESET_COLOR = "\033[0m"
 
 DURATION_RE = re.compile(
     r"""
@@ -75,7 +77,11 @@ def main(duration):
         for n in range(duration, -1, -1):
             lines = get_number_lines(n)
             print_full_screen(lines)
-            time.sleep(1)
+            if n > 0:
+                time.sleep(1)
+        # Show red screen when timer reaches 0
+        print_red_screen()
+        time.sleep(3)  # Display red screen for 3 seconds
     except KeyboardInterrupt:
         pass
     finally:
@@ -108,6 +114,14 @@ def print_full_screen(lines):
     vertical_pad = "\n" * (height // 2)
     padded_text = "\n".join(" " * (width // 2) + line for line in lines)
     print(CLEAR + vertical_pad + padded_text, flush=True)
+
+
+def print_red_screen():
+    """Print a full red screen to indicate timer has ended."""
+    width, height = shutil.get_terminal_size()
+    red_line = RED_BACKGROUND + " " * width + RESET_COLOR
+    red_screen = "\n".join([red_line] * height)
+    print(CLEAR + red_screen, flush=True)
 
 
 def get_number_lines(seconds):

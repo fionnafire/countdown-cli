@@ -26,7 +26,10 @@ Changelog = "https://github.com/treyhunner/countdown-cli/releases"
 python = "^3.8.1"
 click = "^8.0.1"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.scripts]
+countdown = "countdown.__main__:main"
+
+[tool.poetry.group.dev.dependencies]
 pytest = "^8.2.0"
 coverage = {extras = ["toml"], version = "^7.5.1"}
 pre-commit = "^2.16.0"
@@ -40,11 +43,6 @@ pep8-naming = "^0.13.3"
 reorder-python-imports = "^3.12.0"
 pre-commit-hooks = "^4.6.0"
 docutils = { version = "!=0.21.post1", optional = true }
-
-[tool.poetry.scripts]
-countdown = "countdown.__main__:main"
-
-[tool.poetry.group.dev.dependencies]
 tomli = "^2.0.1"
 
 [tool.coverage.paths]
