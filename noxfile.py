@@ -15,7 +15,7 @@ else:
 try:
     from nox_poetry import session
 except ImportError:
-    message = f"""\
+    message = f"""
     Nox failed to import the 'nox-poetry' package.
 
     Please install it using the following command:
@@ -71,7 +71,7 @@ def activate_virtualenv_in_precommit_hooks(session) -> None:
             continue
 
         header = dedent(
-            f"""\
+            f"""
             import os
             os.environ["VIRTUAL_ENV"] = {virtualenv!r}
             os.environ["PATH"] = os.pathsep.join((
@@ -89,6 +89,7 @@ def activate_virtualenv_in_precommit_hooks(session) -> None:
 def precommit(session):
     """Lint using pre-commit."""
     args = session.posargs or ["run", "--all-files", "--show-diff-on-failure"]
+    session.run_always("poetry", "install", "--with=dev", external=True)
     session.install(
         "black",
         "flake8",
