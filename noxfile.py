@@ -15,7 +15,7 @@ else:
 try:
     from nox_poetry import session
 except ImportError:
-    message = f"""
+    message = f"""\
     Nox failed to import the 'nox-poetry' package.
 
     Please install it using the following command:
@@ -71,7 +71,7 @@ def activate_virtualenv_in_precommit_hooks(session) -> None:
             continue
 
         header = dedent(
-            f"""
+            f"""\
             import os
             os.environ["VIRTUAL_ENV"] = {virtualenv!r}
             os.environ["PATH"] = os.pathsep.join((
@@ -111,7 +111,6 @@ def precommit(session):
 def tests(session):
     """Run the test suite."""
     session.run_always("poetry", "install", "--with=dev", external=True)
-    session.install(".")
     session.install("coverage[toml]", "pytest", "pygments")
     try:
         session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs)
