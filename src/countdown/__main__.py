@@ -56,6 +56,15 @@ def duration(string):
     return int(minutes or 0) * 60 + int(seconds or 0)
 
 
+def wait_for_user_input():
+    """Wait for the user to press Enter before exiting the red screen."""
+    try:
+        # In tests, this will be mocked, in real usage it waits for input
+        input()
+    except (EOFError, KeyboardInterrupt):
+        pass
+
+
 @click.command()
 @click.version_option(package_name="countdown-cli")
 @click.argument("duration", type=duration)
@@ -81,7 +90,7 @@ def main(duration):
                 time.sleep(1)
         # Show red screen when timer reaches 0
         print_red_screen()
-        time.sleep(3)  # Display red screen for 3 seconds
+        wait_for_user_input()
     except KeyboardInterrupt:
         pass
     finally:

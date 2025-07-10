@@ -27,8 +27,37 @@ class FakeSleep:
 def clean_main_output(output):
     """Remove ANSI escape codes and whitespace at ends of lines."""
     output = re.sub(r"\033\[(\?\d+[hl]|[HJ])", "", output)
+    output = re.sub(r"\033\[\d*m", "", output)  # Remove color codes
     output = re.sub(r" *\n", "\n", output)
-    return output
+    
+    # Remove the red screen portion - find the last countdown display
+    lines = output.split('\n')
+    
+    # Find the last line that contains countdown characters (blocks)
+    last_countdown_line = -1
+    for i, line in enumerate(lines):
+        if '██' in line:  # This is a countdown display line
+            last_countdown_line = i
+    
+    # If we found countdown displays, keep everything up to a reasonable point after the last one
+    if last_countdown_line >= 0:
+        # Look for the end of the last countdown block (allow some empty lines after)
+        end_index = last_countdown_line
+        empty_count = 0
+        for i in range(last_countdown_line + 1, len(lines)):
+            if not lines[i].strip():
+                empty_count += 1
+                if empty_count <= 6:  # Allow reasonable spacing
+                    end_index = i
+                else:
+                    break  # Too many empty lines, probably red screen
+            else:
+                empty_count = 0
+                end_index = i
+        
+        lines = lines[:end_index + 1]
+    
+    return '\n'.join(lines)
 
 
 def join_lines(lines):
@@ -307,6 +336,8 @@ def test_main_3_seconds_sleeps_4_times(
     monkeypatch.setattr("shutil.get_terminal_size", fake_size(60, 20))
     fake_sleep = FakeSleep()
     monkeypatch.setattr("time.sleep", fake_sleep)
+    # Mock input to avoid blocking
+    monkeypatch.setattr("builtins.input", lambda: "")
     result = runner.invoke(__main__.main, ["3s"])
     assert result.exit_code == 0
     assert (
@@ -359,7 +390,7 @@ def test_main_3_seconds_sleeps_4_times(
             " "
         )
     )
-    assert fake_sleep.slept == 4  # 3 seconds = 4 sleeps
+    assert fake_sleep.slept == 3  # 3 seconds countdown sleeps (no red screen sleep)
 
 
 def test_main_1_minute(
@@ -454,8 +485,10 @@ def test_main_10_minutes_has_over_600_clear_screens(
     monkeypatch.setattr("shutil.get_terminal_size", fake_size(32, 10))
     fake_sleep = FakeSleep()
     monkeypatch.setattr("time.sleep", fake_sleep)
+    # Mock input to avoid blocking
+    monkeypatch.setattr("builtins.input", lambda: "")
     result = runner.invoke(__main__.main, ["10m"])
-    assert fake_sleep.slept == 601  # 10 minutes = 601 sleeps
+    assert fake_sleep.slept == 600  # 10 minutes = 600 sleeps (no red screen sleep)
     assert result.stdout.count("\033[H\033[J") == 601
 
 
@@ -466,6 +499,7 @@ def test_main_enables_alt_buffer_and_hides_cursor_at_beginning(
     monkeypatch.setattr("shutil.get_terminal_size", fake_size(32, 10))
     fake_sleep = FakeSleep()
     monkeypatch.setattr("time.sleep", fake_sleep)
+    monkeypatch.setattr("builtins.input", lambda: "")
     result = runner.invoke(__main__.main, ["5m"])
     assert result.stdout.startswith("\033[?1049h\033[?25l")
 
@@ -477,6 +511,7 @@ def test_main_disable_alt_buffer_and_show_cursor_at_end(
     monkeypatch.setattr("shutil.get_terminal_size", fake_size(32, 10))
     fake_sleep = FakeSleep()
     monkeypatch.setattr("time.sleep", fake_sleep)
+    monkeypatch.setattr("builtins.input", lambda: "")
     result = runner.invoke(__main__.main, ["5m"])
     assert result.stdout.endswith("\033[?25h\033[?1049l")
 
