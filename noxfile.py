@@ -109,6 +109,7 @@ def precommit(session):
 @session(python=python_versions)
 def tests(session):
     """Run the test suite."""
+    session.run_always("poetry", "install", "--with=dev", external=True)
     session.install(".")
     session.install("coverage[toml]", "pytest", "pygments")
     try:
