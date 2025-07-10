@@ -65,7 +65,7 @@ jobs:
           nox --force-color --python=${{ matrix.python-version }}
 
       - name: Upload coverage data
-        uses: "actions/upload-artifact@v3.1.2"
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-data
           path: ".coverage.*"
@@ -107,7 +107,7 @@ jobs:
           nox --force-color --session=coverage -- xml
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v4
 
   required-checks-pass:
     name: Ensure everything required is passing for branch protection
